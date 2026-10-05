@@ -1,0 +1,31 @@
+# Dependências
+node_modules/
+venv/
+.venv/
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Builds
+dist/
+build/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arduino
+*.bin
+*.elf
+
+# Logs
+*.log
