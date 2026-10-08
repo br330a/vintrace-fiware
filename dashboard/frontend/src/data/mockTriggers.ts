@@ -1,21 +1,5 @@
 import type { MonitoringDeviceId } from './mockHistory'
-
-export interface TriggerValues {
-  temperature: {
-    min: number
-    max: number
-  }
-
-  humidity: {
-    min: number
-    max: number
-  }
-
-  luminosity: {
-    min: number
-    max: number
-  }
-}
+import type { TriggerValues } from '../types/trigger'
 
 export const mockTriggers: Record<
   MonitoringDeviceId,

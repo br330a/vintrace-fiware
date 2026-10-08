@@ -9,22 +9,19 @@ import {
   TriangleAlert,
 } from 'lucide-react'
 
-import {
-  mockTriggers,
-  type TriggerValues,
-} from '../data/mockTriggers'
+import { useTriggers } from '../contexts/TriggersContext'
 
 import type { MonitoringDeviceId } from '../data/mockHistory'
+import type { TriggerValues } from '../types/trigger'
 
 function TriggersPage() {
   const [deviceId, setDeviceId] =
     useState<MonitoringDeviceId>('vintrace001')
 
-  const [savedTriggers, setSavedTriggers] =
-    useState(mockTriggers)
+  const { triggers, updateTriggers } = useTriggers()
 
   const [form, setForm] = useState<TriggerValues>(
-    mockTriggers.vintrace001,
+    triggers.vintrace001,
   )
 
   const [error, setError] = useState('')
@@ -34,7 +31,7 @@ function TriggersPage() {
     newDeviceId: MonitoringDeviceId,
   ) {
     setDeviceId(newDeviceId)
-    setForm(savedTriggers[newDeviceId])
+    setForm(triggers[newDeviceId])
     setError('')
     setSuccess('')
   }
@@ -73,16 +70,15 @@ function TriggersPage() {
       invalidLuminosity
     ) {
       setSuccess('')
+
       setError(
         'O limite mínimo precisa ser menor que o limite máximo.',
       )
+
       return
     }
 
-    setSavedTriggers((current) => ({
-      ...current,
-      [deviceId]: form,
-    }))
+    updateTriggers(deviceId, form)
 
     setError('')
     setSuccess('Triggers salvos com sucesso.')
@@ -156,7 +152,6 @@ function TriggersPage() {
       )}
 
       <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
-
         {/* TEMPERATURA */}
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
           <div className="flex items-center gap-3">

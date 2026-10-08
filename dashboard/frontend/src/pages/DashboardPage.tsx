@@ -10,23 +10,28 @@ import {
 } from 'lucide-react'
 
 import SensorCard from '../components/SensorCard'
+
+import { useTriggers } from '../contexts/TriggersContext'
 import { mockAlerts } from '../data/mockAlerts'
-import { mockDevice } from '../data/mockDevice'
+import { mockDevices } from '../data/mockDevices'
 
 function DashboardPage() {
-  const { temperature, humidity, luminosity } = mockDevice.sensors
+  const { triggers } = useTriggers()
+
+  const device = mockDevices[0]
+  const deviceTriggers = triggers.vintrace001
 
   const temperatureNormal =
-    temperature.value >= temperature.min &&
-    temperature.value <= temperature.max
+    device.temperature >= deviceTriggers.temperature.min &&
+    device.temperature <= deviceTriggers.temperature.max
 
   const humidityNormal =
-    humidity.value >= humidity.min &&
-    humidity.value <= humidity.max
+    device.humidity >= deviceTriggers.humidity.min &&
+    device.humidity <= deviceTriggers.humidity.max
 
   const luminosityNormal =
-    luminosity.value >= luminosity.min &&
-    luminosity.value <= luminosity.max
+    device.luminosity >= deviceTriggers.luminosity.min &&
+    device.luminosity <= deviceTriggers.luminosity.max
 
   const environmentNormal =
     temperatureNormal &&
@@ -50,9 +55,24 @@ function DashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start rounded-full border border-emerald-900 bg-emerald-950 px-3 py-1.5 text-sm text-emerald-400">
-          <span className="h-2 w-2 rounded-full bg-emerald-400" />
-          Dispositivo online
+        <div
+          className={`flex items-center gap-2 self-start rounded-full border px-3 py-1.5 text-sm ${
+            device.online
+              ? 'border-emerald-900 bg-emerald-950 text-emerald-400'
+              : 'border-zinc-700 bg-zinc-900 text-zinc-400'
+          }`}
+        >
+          <span
+            className={`h-2 w-2 rounded-full ${
+              device.online
+                ? 'bg-emerald-400'
+                : 'bg-zinc-500'
+            }`}
+          />
+
+          {device.online
+            ? 'Dispositivo online'
+            : 'Dispositivo offline'}
         </div>
       </div>
 
@@ -65,18 +85,18 @@ function DashboardPage() {
 
             <div>
               <h2 className="font-semibold">
-                {mockDevice.name}
+                {device.name}
               </h2>
 
               <p className="text-sm text-zinc-500">
-                {mockDevice.id} · {mockDevice.location}
+                {device.id} · {device.location}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 text-sm text-zinc-500">
             <Clock3 size={16} />
-            {mockDevice.lastUpdate}
+            Há poucos segundos
           </div>
         </div>
       </div>
@@ -128,28 +148,28 @@ function DashboardPage() {
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <SensorCard
           title="Temperatura"
-          value={temperature.value}
+          value={device.temperature}
           unit="°C"
-          min={temperature.min}
-          max={temperature.max}
+          min={deviceTriggers.temperature.min}
+          max={deviceTriggers.temperature.max}
           icon={Thermometer}
         />
 
         <SensorCard
           title="Umidade"
-          value={humidity.value}
+          value={device.humidity}
           unit="%"
-          min={humidity.min}
-          max={humidity.max}
+          min={deviceTriggers.humidity.min}
+          max={deviceTriggers.humidity.max}
           icon={Droplets}
         />
 
         <SensorCard
           title="Luminosidade"
-          value={luminosity.value}
+          value={device.luminosity}
           unit="%"
-          min={luminosity.min}
-          max={luminosity.max}
+          min={deviceTriggers.luminosity.min}
+          max={deviceTriggers.luminosity.max}
           icon={Lightbulb}
         />
       </div>

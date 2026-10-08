@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { AlertCircle, Cpu, Plus, X } from 'lucide-react'
 import DeviceCard from '../components/DeviceCard'
-import {
-  mockDevices,
-  type Device,
-} from '../data/mockDevices'
+import { mockDevices } from '../data/mockDevices'
+import type { Device } from '../types/device'
 
 function DevicesPage() {
   const [devices, setDevices] = useState<Device[]>(mockDevices)

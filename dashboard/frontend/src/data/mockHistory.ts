@@ -6,12 +6,6 @@ export const mockMonitoringData = {
     id: 'vintrace001',
     name: 'Adega Principal',
 
-    current: {
-      temperature: 16.8,
-      humidity: 68,
-      luminosity: 12,
-    },
-
     history: {
       '24h': {
         temperature: [
@@ -120,12 +114,6 @@ export const mockMonitoringData = {
   vintrace002: {
     id: 'vintrace002',
     name: 'Adega Reserva',
-
-    current: {
-      temperature: 19.6,
-      humidity: 84,
-      luminosity: 7,
-    },
 
     history: {
       '24h': {

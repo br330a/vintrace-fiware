@@ -8,6 +8,9 @@ import {
 
 import HistoryChart from '../components/HistoryChart'
 
+import { useTriggers } from '../contexts/TriggersContext'
+import { mockDevices } from '../data/mockDevices'
+
 import {
   mockMonitoringData,
   type HistoryPeriod,
@@ -16,23 +19,32 @@ import {
 
 function MonitoringPage() {
   const [period, setPeriod] = useState<HistoryPeriod>('24h')
+
   const [deviceId, setDeviceId] =
     useState<MonitoringDeviceId>('vintrace001')
 
-  const device = mockMonitoringData[deviceId]
-  const history = device.history[period]
+  const { triggers } = useTriggers()
+
+  const monitoringDevice = mockMonitoringData[deviceId]
+  const history = monitoringDevice.history[period]
+
+  const device = mockDevices.find(
+    (item) => item.id === deviceId,
+  )!
+
+  const deviceTriggers = triggers[deviceId]
 
   const temperatureNormal =
-    device.current.temperature >= 10 &&
-    device.current.temperature <= 18
+    device.temperature >= deviceTriggers.temperature.min &&
+    device.temperature <= deviceTriggers.temperature.max
 
   const humidityNormal =
-    device.current.humidity >= 60 &&
-    device.current.humidity <= 80
+    device.humidity >= deviceTriggers.humidity.min &&
+    device.humidity <= deviceTriggers.humidity.max
 
   const luminosityNormal =
-    device.current.luminosity >= 0 &&
-    device.current.luminosity <= 20
+    device.luminosity >= deviceTriggers.luminosity.min &&
+    device.luminosity <= deviceTriggers.luminosity.max
 
   return (
     <div>
@@ -58,7 +70,9 @@ function MonitoringPage() {
         <select
           value={deviceId}
           onChange={(event) =>
-            setDeviceId(event.target.value as MonitoringDeviceId)
+            setDeviceId(
+              event.target.value as MonitoringDeviceId,
+            )
           }
           className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm outline-none transition focus:border-amber-400 sm:max-w-sm"
         >
@@ -86,7 +100,9 @@ function MonitoringPage() {
             <button
               key={option.value}
               onClick={() =>
-                setPeriod(option.value as HistoryPeriod)
+                setPeriod(
+                  option.value as HistoryPeriod,
+                )
               }
               className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition sm:flex-none ${
                 period === option.value
@@ -101,7 +117,6 @@ function MonitoringPage() {
       </div>
 
       <div className="mt-6 space-y-6">
-        {/* TEMPERATURA */}
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -122,7 +137,7 @@ function MonitoringPage() {
 
             <div className="text-right">
               <p className="text-2xl font-semibold">
-                {device.current.temperature} °C
+                {device.temperature} °C
               </p>
 
               <p
@@ -132,7 +147,9 @@ function MonitoringPage() {
                     : 'text-red-400'
                 }`}
               >
-                {temperatureNormal ? 'Normal' : 'Alerta'}
+                {temperatureNormal
+                  ? 'Normal'
+                  : 'Alerta'}
               </p>
             </div>
           </div>
@@ -140,8 +157,8 @@ function MonitoringPage() {
           <div className="mt-6">
             <HistoryChart
               data={history.temperature}
-              min={10}
-              max={18}
+              min={deviceTriggers.temperature.min}
+              max={deviceTriggers.temperature.max}
               unit="°C"
               label="Temperatura"
             />
@@ -150,17 +167,20 @@ function MonitoringPage() {
           <div className="mt-4 flex flex-wrap gap-4 border-t border-zinc-800 pt-4 text-xs text-zinc-500">
             <div className="flex items-center gap-2">
               <span className="h-2 w-4 rounded-full bg-emerald-500" />
-              Limite mínimo: 10 °C
+
+              Limite mínimo:{' '}
+              {deviceTriggers.temperature.min} °C
             </div>
 
             <div className="flex items-center gap-2">
               <span className="h-2 w-4 rounded-full bg-red-500" />
-              Limite máximo: 18 °C
+
+              Limite máximo:{' '}
+              {deviceTriggers.temperature.max} °C
             </div>
           </div>
         </div>
 
-        {/* UMIDADE */}
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -181,7 +201,7 @@ function MonitoringPage() {
 
             <div className="text-right">
               <p className="text-2xl font-semibold">
-                {device.current.humidity}%
+                {device.humidity}%
               </p>
 
               <p
@@ -191,7 +211,9 @@ function MonitoringPage() {
                     : 'text-red-400'
                 }`}
               >
-                {humidityNormal ? 'Normal' : 'Alerta'}
+                {humidityNormal
+                  ? 'Normal'
+                  : 'Alerta'}
               </p>
             </div>
           </div>
@@ -199,8 +221,8 @@ function MonitoringPage() {
           <div className="mt-6">
             <HistoryChart
               data={history.humidity}
-              min={60}
-              max={80}
+              min={deviceTriggers.humidity.min}
+              max={deviceTriggers.humidity.max}
               unit="%"
               label="Umidade"
             />
@@ -209,17 +231,20 @@ function MonitoringPage() {
           <div className="mt-4 flex flex-wrap gap-4 border-t border-zinc-800 pt-4 text-xs text-zinc-500">
             <div className="flex items-center gap-2">
               <span className="h-2 w-4 rounded-full bg-emerald-500" />
-              Limite mínimo: 60%
+
+              Limite mínimo:{' '}
+              {deviceTriggers.humidity.min}%
             </div>
 
             <div className="flex items-center gap-2">
               <span className="h-2 w-4 rounded-full bg-red-500" />
-              Limite máximo: 80%
+
+              Limite máximo:{' '}
+              {deviceTriggers.humidity.max}%
             </div>
           </div>
         </div>
 
-        {/* LUMINOSIDADE */}
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -240,7 +265,7 @@ function MonitoringPage() {
 
             <div className="text-right">
               <p className="text-2xl font-semibold">
-                {device.current.luminosity}%
+                {device.luminosity}%
               </p>
 
               <p
@@ -250,7 +275,9 @@ function MonitoringPage() {
                     : 'text-red-400'
                 }`}
               >
-                {luminosityNormal ? 'Normal' : 'Alerta'}
+                {luminosityNormal
+                  ? 'Normal'
+                  : 'Alerta'}
               </p>
             </div>
           </div>
@@ -258,8 +285,8 @@ function MonitoringPage() {
           <div className="mt-6">
             <HistoryChart
               data={history.luminosity}
-              min={0}
-              max={20}
+              min={deviceTriggers.luminosity.min}
+              max={deviceTriggers.luminosity.max}
               unit="%"
               label="Luminosidade"
             />
@@ -268,12 +295,16 @@ function MonitoringPage() {
           <div className="mt-4 flex flex-wrap gap-4 border-t border-zinc-800 pt-4 text-xs text-zinc-500">
             <div className="flex items-center gap-2">
               <span className="h-2 w-4 rounded-full bg-emerald-500" />
-              Limite mínimo: 0%
+
+              Limite mínimo:{' '}
+              {deviceTriggers.luminosity.min}%
             </div>
 
             <div className="flex items-center gap-2">
               <span className="h-2 w-4 rounded-full bg-red-500" />
-              Limite máximo: 20%
+
+              Limite máximo:{' '}
+              {deviceTriggers.luminosity.max}%
             </div>
           </div>
         </div>

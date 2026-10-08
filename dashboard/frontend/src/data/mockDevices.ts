@@ -1,12 +1,4 @@
-export interface Device {
-  id: string
-  name: string
-  location: string
-  online: boolean
-  temperature: number
-  humidity: number
-  luminosity: number
-}
+import type { Device } from '../types/device'
 
 export const mockDevices: Device[] = [
   {
@@ -23,8 +15,8 @@ export const mockDevices: Device[] = [
     name: 'Adega Reserva',
     location: 'Estoque',
     online: false,
-    temperature: 17.2,
-    humidity: 71,
-    luminosity: 8,
+    temperature: 19.6,
+    humidity: 84,
+    luminosity: 7,
   },
 ]
